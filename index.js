@@ -17,6 +17,10 @@ var connection = mysql.createConnection({
 
 connection.connect();
 
+bamazon();
+
+function bamazon (){
+
 connection.query('SELECT ID, product_name, price, stock FROM products', function (err, results, fields) {
       if (err) throw err;
       console.log('---------------------------------ITEMS -------------------------------');
@@ -49,7 +53,7 @@ connection.query('SELECT ID, product_name, price, stock FROM products', function
                     if (inStock >= buyQuantity) {
                         availability = true;
                     }
-                    else if (inStock <= buyQuantity ){
+                    else if (inStock < buyQuantity ){
                         availability = false;
                         console.log("Insufficent Stock")
                     }
@@ -70,24 +74,22 @@ connection.query('SELECT ID, product_name, price, stock FROM products', function
                       {
                         type:'confirm',
                         name:'confirmation',
-                        message:'Would you like to proceed with the order? '
+                        message:'Place Order? '
                       }
 
                     ]).then(function (answers) {
                         if(availability === true){
-                            console.log('**********************************************');
                             console.log('ORDER HAS BEEN PLACED');
-                            console.log('**********************************************');
                         } else {
                             console.log('ORDER CANCELLED - Insufficent Stock');
                         }
 
-                        connection.end()
+                        bamazon();
                     });
               });
        
 
       });
 });
-
+};
 
